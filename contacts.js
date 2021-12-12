@@ -16,22 +16,30 @@ const listContacts = async () => {
 
 const getContactById = async (contactId) => {
   const contacts = await readContent();
-  const [contact] = contacts.filter((contact) => contact.id === contactId);
+  const contact = contacts.find((contact) => contact.id === contactId);
   return contact;
 };
 
 const removeContact = async (contactId) => {
   const contacts = await readContent();
+  const contact = contacts.find((contact) => contact.id === contactId);
   const filteredContacts = contacts.filter(
     (contact) => contact.id !== contactId
   );
-  await fs.writeFile(contactPath, JSON.stringify(filteredContacts, null, 2));
-  return filteredContacts;
+
+  if (contact) {
+    await fs.writeFile(contactPath, JSON.stringify(filteredContacts, null, 2));
+    return filteredContacts;
+  }
 };
 
 const addContact = async (name, email, phone) => {
   const contacts = await readContent();
   const newContact = { name, email, phone, id: crypto.randomUUID() };
+
+  if (!newContact.name || !newContact.email || !newContact.phone) {
+    throw new Error("Please fill all fields to add a new contact!");
+  }
   contacts.push(newContact);
   await fs.writeFile(contactPath, JSON.stringify(contacts, null, 2));
   return newContact;
