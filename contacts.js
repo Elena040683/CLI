@@ -38,7 +38,7 @@ const addContact = async (name, email, phone) => {
   const newContact = { name, email, phone, id: crypto.randomUUID() };
 
   if (!newContact.name || !newContact.email || !newContact.phone) {
-    throw new Error("Please fill all fields to add a new contact!");
+    console.log("Please fill all fields to add a new contact!");
   }
   contacts.push(newContact);
   await fs.writeFile(contactPath, JSON.stringify(contacts, null, 2));
